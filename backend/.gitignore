@@ -1,0 +1,16 @@
+# Byte-compiled / cache
+__pycache__/
+
+# Virtual environments
+.venv/
+
+# Environment & secrets
+.env
+
+
+# Logs & runtime
+*.log
+
+
+# IDE / editor
+.vscode/
