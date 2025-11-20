@@ -2,8 +2,6 @@ from time import perf_counter
 from fastapi import FastAPI, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from scalar_fastapi import get_scalar_api_reference
-from uuid import uuid4, UUID
-from typing import Annotated
 
 from app.api.router import master_router
 from app.core.exceptions import add_exception_handlers
@@ -73,16 +71,11 @@ async def custom_middleware(request: Request, call_next):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"]
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_credentials=True,
+    allow_headers=["*"],
 )
-
-def get_id():
-    return uuid4()
-
-@app.get("/")
-def read_root(id: Annotated[UUID, Depends(get_id)]):
-    return {"id": str(id)}
 
 ### Scalar API Documentation
 @app.get("/docs", include_in_schema=False)
