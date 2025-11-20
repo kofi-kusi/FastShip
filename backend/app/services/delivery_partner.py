@@ -21,7 +21,7 @@ class DeliveryPartnerService(UserService):
             partner.servicable_locations.append(
                 location
                 if location
-                else Location(zip_code)
+                else await self._add(Location(zip_code = zip_code))
             )
         
         return await self._update(partner) 
