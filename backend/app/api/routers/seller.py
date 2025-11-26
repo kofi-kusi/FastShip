@@ -10,7 +10,7 @@ from app.utils import TEMPLATE_DIR
 from app.config import app_settings
 from app.api.schemas.tag import APITag
 
-from ..dependencies import SellerServiceDep, get_seller_access_token
+from ..dependencies import SellerDep, SellerServiceDep, get_seller_access_token
 from ..schemas.seller import SellerCreate, SellerRead
 
 router = APIRouter(prefix="/seller", tags=[APITag.SELLER])
@@ -41,6 +41,11 @@ async def verify_seller_email(token: str, service: SellerServiceDep):
     await service.verify_email(token)
     return {"detail": "Account verified"}
 
+
+### Current login seller
+@router.get("/me")
+async def me(seller: SellerDep):
+    return seller
 
 ### Email Password Reset Link
 @router.get("/forgot_password")
