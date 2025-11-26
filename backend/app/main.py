@@ -1,6 +1,7 @@
 from time import perf_counter
 from fastapi import FastAPI, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.routing import APIRoute
 from scalar_fastapi import get_scalar_api_reference
 
 from app.api.router import master_router
@@ -23,6 +24,10 @@ Delivery management system for selllers and delivery agents
 """
 
 
+def custom_generate_unique_id_function(route: APIRoute):
+    return route.name
+
+
 app = FastAPI(
     title="FastShip",
     description=description,
@@ -31,30 +36,25 @@ app = FastAPI(
     contact={
         "name": "Kofi Kusi Appau",
         "url": "https://fastship.com/support",
-        "email": "kusi@fastship.com"
+        "email": "kusi@fastship.com",
     },
     openapi_tags=[
+        {"name": APITag.SHIPMENT, "description": "Operations related to shipments"},
+        {"name": APITag.SELLER, "description": "Operations related to sellers"},
         {
-            "name": APITag.SHIPMENT,
-            "description": "Operations related to shipments"
-        },
-        {
-            "name": APITag.SELLER,
-            "description": "Operations related to sellers" 
-        },
-        {
-            
             "name": APITag.DELIVERY_PARTNER,
-            "description": "Operations related to delivery agents"
+            "description": "Operations related to delivery agents",
         },
-    ]
+    ],
+    generate_unique_id_function=custom_generate_unique_id_function,
 )
 
 # Add all enpoints
 app.include_router(master_router)
 
 # Add custom exception handlers
-add_exception_handlers(app) 
+add_exception_handlers(app)
+
 
 @app.middleware("http")
 async def custom_middleware(request: Request, call_next):
@@ -65,9 +65,12 @@ async def custom_middleware(request: Request, call_next):
     end = perf_counter()
     time_taken = round(end - start, 2)
 
-    add_log.delay(f"{request.method} {request.url} ({response.status_code}) {time_taken}")
+    add_log.delay(
+        f"{request.method} {request.url} ({response.status_code}) {time_taken}"
+    )
 
     return response
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,6 +79,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_headers=["*"],
 )
+
 
 ### Scalar API Documentation
 @app.get("/docs", include_in_schema=False)
