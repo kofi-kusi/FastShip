@@ -799,6 +799,24 @@ export class Api<
      * No description
      *
      * @tags Seller
+     * @name Me
+     * @summary Me
+     * @request GET:/seller/me
+     * @secure
+     */
+    me: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/seller/me`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Seller
      * @name ForgotPassword
      * @summary Forgot Password
      * @request GET:/seller/forgot_password
@@ -948,6 +966,50 @@ export class Api<
     ) =>
       this.request<any, HTTPValidationError>({
         path: `/partner/verify`,
+        method: "GET",
+        query: query,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Delivery Partner
+     * @name Me
+     * @summary Me
+     * @request GET:/partner/me
+     * @secure
+     */
+    me: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/partner/me`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Delivery Partner
+     * @name ForgotPassword
+     * @summary Forgot Password
+     * @request GET:/partner/forgot_password
+     */
+    forgotPassword: (
+      query: {
+        /**
+         * Email
+         * @format email
+         */
+        email: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<any, HTTPValidationError>({
+        path: `/partner/forgot_password`,
         method: "GET",
         query: query,
         format: "json",
