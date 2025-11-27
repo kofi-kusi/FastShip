@@ -2,6 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import EmailStr
 
 from app.database.redis import add_jti_to_blacklist
 from app.core.exceptions import InvalidInput
@@ -53,6 +54,18 @@ async def verify_delivery_partner_email(
     return {"detail": "Account verified"}
 
 
+### Current login seller
+@router.get("/me")
+async def me(partner: DeliveryPartnerDep):
+    return partner
+
+
+### Email Password Reset Link
+@router.get("/forgot_password")
+async def forgot_password(email: EmailStr, service: DeliveryPartnerServiceDep):
+    await service.send_password_reset_link(email, router.prefix)
+    return {"detail": "Check email for password reset link"}
+
 ### Update the logged in delivery partner
 @router.post("/", response_model=DeliveryPartnerRead)
 async def update_delivery_partner(
@@ -76,5 +89,5 @@ async def update_delivery_partner(
 async def logout_delivery_partner(
     token_data: Annotated[dict, Depends(get_partner_access_token)],
 ):
-    await add_jti_to_blacklist(token_data["jti"])
+    add_jti_to_blacklist(token_data["jti"])
     return {"detail": "Successfully logged out"}
