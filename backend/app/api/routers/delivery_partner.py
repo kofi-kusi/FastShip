@@ -89,5 +89,5 @@ async def update_delivery_partner(
 async def logout_delivery_partner(
     token_data: Annotated[dict, Depends(get_partner_access_token)],
 ):
-    add_jti_to_blacklist(token_data["jti"])
+    await add_jti_to_blacklist(token_data["jti"])
     return {"detail": "Successfully logged out"}

@@ -9,6 +9,7 @@ from app.database.redis import add_jti_to_blacklist
 from app.utils import TEMPLATE_DIR
 from app.config import app_settings
 from app.api.schemas.tag import APITag
+from app.api.schemas.shipment import ShipmentRead
 
 from ..dependencies import SellerDep, SellerServiceDep, get_seller_access_token
 from ..schemas.seller import SellerCreate, SellerRead
@@ -47,6 +48,13 @@ async def verify_seller_email(token: str, service: SellerServiceDep):
 async def me(seller: SellerDep):
     return seller
 
+
+### Get all shipments by a seller
+@router.get("/shipments", response_model=list[ShipmentRead])
+async def get_shipments(seller: SellerDep):
+    return seller.shipments
+
+
 ### Email Password Reset Link
 @router.get("/forgot_password")
 async def forgot_password(email: EmailStr, service: SellerServiceDep):
@@ -64,8 +72,9 @@ async def get_reset_password_form(request: Request, token: str):
         name="password/reset.html",
         context={
             "reset_url": f"http://{app_settings.APP_DOMAIN}{router.prefix}/reset_password?token={token}"
-        }
+        },
     )
+
 
 ### Reset Seller Password
 @router.post("/reset_password")
@@ -80,7 +89,11 @@ async def reset_password(
     templates = Jinja2Templates(TEMPLATE_DIR)
     return templates.TemplateResponse(
         request=request,
-        name="password/reset_success.html" if is_success else "password/reset_failed.html",
+        name=(
+            "password/reset_success.html"
+            if is_success
+            else "password/reset_failed.html"
+        ),
     )
 
 
