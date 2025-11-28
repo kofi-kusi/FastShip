@@ -29,6 +29,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (token) {
       setToken(token);
+      setUser(localStorage.getItem("user") as UserType)
       api.setSecurityData(token);
     } else {
         setToken(null)

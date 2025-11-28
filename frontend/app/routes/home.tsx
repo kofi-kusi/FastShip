@@ -20,6 +20,12 @@ export default function Home() {
           Seller Login
         </Link>
       </Button>
+
+      <Button className="mt-2">
+        <Link to="/partner/login">
+          Partner Login
+        </Link>
+      </Button>
     </div>
   );
 }

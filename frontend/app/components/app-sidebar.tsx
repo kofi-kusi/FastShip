@@ -14,6 +14,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "~/components/ui/sidebar"
+import { AuthContext } from "~/contexts/AuthContext"
 
 // This is sample data.
 const data = {
@@ -156,7 +157,21 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ currentRoute, ...props }: {currentRoute:  string } & React.ComponentProps<typeof Sidebar>) {
+
+  const { user } = React.useContext(AuthContext)
+
+  const menuItems = [
+    {
+      title: "Dashboard",
+      url: "/dashboard"
+    },
+    {
+      title: "Account",
+      url: "/account"
+    }
+  ]
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -179,26 +194,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
+            {menuItems.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton asChild isActive={currentRoute === item.title}>
                   <a href={item.url} className="font-medium">
                     {item.title}
                   </a>
                 </SidebarMenuButton>
-                {item.items?.length ? (
-                  <SidebarMenuSub>
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.title}>
-                        <SidebarMenuSubButton asChild isActive={item.isActive}>
-                          <a href={item.url}>{item.title}</a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                ) : null}
+                
               </SidebarMenuItem>
             ))}
+            {
+              user === "seller" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={currentRoute === "Submit Shipment"}>
+                    <a href="/submit-shipment" className="font-medium">
+                      Submit Shipment
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            }
+            {
+              user === "partner" && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={currentRoute === "Update Shipment"}>
+                    <a href="/update-shipment" className="font-medium">
+                      Update Shipment
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
+            }
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
