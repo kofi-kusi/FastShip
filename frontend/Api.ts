@@ -1012,6 +1012,24 @@ export class Api<
      * No description
      *
      * @tags Delivery Partner
+     * @name GetShipments
+     * @summary Get Shipments
+     * @request GET:/partner/shipments
+     * @secure
+     */
+    getShipments: (params: RequestParams = {}) =>
+      this.request<ShipmentRead[], any>({
+        path: `/partner/shipments`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Delivery Partner
      * @name ForgotPassword
      * @summary Forgot Password
      * @request GET:/partner/forgot_password

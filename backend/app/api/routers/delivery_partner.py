@@ -7,6 +7,7 @@ from pydantic import EmailStr
 from app.database.redis import add_jti_to_blacklist
 from app.core.exceptions import InvalidInput
 from app.api.schemas.tag import APITag
+from app.api.schemas.shipment import ShipmentRead
 
 from ..dependencies import (
     DeliveryPartnerDep,
@@ -58,6 +59,12 @@ async def verify_delivery_partner_email(
 @router.get("/me")
 async def me(partner: DeliveryPartnerDep):
     return partner
+
+
+### Get all shipments by a seller
+@router.get("/shipments", response_model=list[ShipmentRead])
+async def get_shipments(partner: DeliveryPartnerDep):
+    return partner.shipments
 
 
 ### Email Password Reset Link
