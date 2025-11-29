@@ -31,9 +31,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       setToken(token);
       setUser(localStorage.getItem("user") as UserType)
       api.setSecurityData(token);
-    } else {
-        setToken(null)
-    }
+    } 
   }, []);
 
   async function login(userType: UserType, email: string, password: string) {
@@ -51,7 +49,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
             api.setSecurityData(data.access_token);
       
             localStorage.setItem("token", data.access_token);
-            localStorage.setItem("user ", userType)
+            localStorage.setItem("user", userType)
       
             navigate("/dashboard")
         }
