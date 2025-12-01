@@ -67,12 +67,12 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-
+    navigate("/")
   }
 
   return (
     <AuthContext.Provider value={{ token, user, login, logout }}>
-      {token === undefined ? <h1>Loading...</h1> : children}
+      { token === undefined ? <h2>Loading...</h2> : children }
     </AuthContext.Provider>
   );
 }
