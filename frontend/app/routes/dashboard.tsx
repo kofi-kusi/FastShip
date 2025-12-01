@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
+import { ShipmentStatus } from "Api"
 import { useContext } from "react"
 import { Navigate } from "react-router"
 import { toast } from "sonner"
 import { AppSidebar } from "~/components/app-sidebar"
+import ShipmentCard from "~/components/shipment-card"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,9 +21,10 @@ import {
 } from "~/components/ui/sidebar"
 import { AuthContext } from "~/contexts/AuthContext"
 import api from "~/lib/api"
+import { getShipmentsCountForStatus } from "~/lib/utils"
 
 export default function DashboardPage() {
-  const { token } = useContext(AuthContext)
+  const { token, user } = useContext(AuthContext)
 
   if (!token) {
     return <Navigate to="/login" />
@@ -30,13 +33,15 @@ export default function DashboardPage() {
   const {isLoading, isError, data} = useQuery({
     queryKey: ["shipments"],
     queryFn: async () => {
-      const data = await api.seller.getShipments()
+      const userApi = user === "seller" ? api.seller : api.partner
+      const data = userApi.getShipments()
       return data
     }
   })
 
   if (isError) {
     toast.error("Failed getting shipments")
+    return
   }
 
 
@@ -58,11 +63,18 @@ export default function DashboardPage() {
                 <div className="flex flex-1 flex-col gap-4 p-4">
                   <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     <NumberLabel value={data.data.length} label="Total Shipments" />
-                    <NumberLabel value={100} label="Placed" />
-                    <NumberLabel value={100} label="In transit" />
-                    <NumberLabel value={100} label="Delivered" />
+                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.Placed)} label="Placed" />
+                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.InTransit)} label="In Transit" />
+                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.Delivered)} label="Delivered" />
                   </div>
-                  <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
+                  { isLoading || !data && <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />}
+                  <div className="grid auto-rows-min gap-4 md:grid-cols-4">
+                  {
+                    data.data.map((shipment) => (
+                      <ShipmentCard shipment={shipment} />
+                    ))
+                  }
+                  </div>
                 </div>
               )
             }
