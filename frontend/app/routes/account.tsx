@@ -5,7 +5,6 @@ import { Navigate, useNavigate } from "react-router"
 import { toast } from "sonner"
 import { AppSidebar } from "~/components/app-sidebar"
 import ShipmentCard from "~/components/shipment-card"
-import { SubmitShipmentForm } from "~/components/submit-shipment-form"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,31 +26,52 @@ import { AuthContext } from "~/contexts/AuthContext"
 import api from "~/lib/api"
 import { getShipmentsCountForStatus } from "~/lib/utils"
 
-export default function SubmitShipmentPage() {
+export default function AccountPage() {
   const { token, user, logout } = useContext(AuthContext)
 
-  if (token === undefined) {
+  if (!token) {
     return <Navigate to="/" />
   }
-  if (user !== "seller") {
-    return <Navigate to="/dashboard" />
+
+  const {isLoading, isError, data} = useQuery({
+    queryKey: ["account"],
+    queryFn: async () => {
+      const getUserProfile = user === "seller" ? api.seller : api.partner
+      const { data } = await getUserProfile.me()
+      return data
+    }
+  })
+
+  if (isError) {
+    toast.error("Error loading account details")
+    return
   }
 
 
 
   return (
     <SidebarProvider>
-      <AppSidebar currentRoute="Submit Shipment" />
+      <AppSidebar currentRoute="Account" />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <h2>Submit Shipment</h2>
+            <h2>Account</h2>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <SubmitShipmentForm />
+          {
+              isLoading ? <h1>Loading ...</h1> : (
+                <div className="flex flex-col gap-2 max-w-[400px]">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" value={data?.name} readOnly/>
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" value={data?.email} readOnly/>
+                  <Button onClick={logout}>Log out</Button>
+                </div>
+              )
+            }
         </div>
       </SidebarInset>
     </SidebarProvider>

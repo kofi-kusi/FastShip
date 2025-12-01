@@ -51,7 +51,7 @@ export function SubmitShipmentForm({
 
   return (
     <form {...props} action={submitShipment}>
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 max-w-[900px]">
         <div className="flex flex-col gap-2">
           <h1 className="text-xl font-bold">Submit a new shipment</h1>
         </div>
@@ -98,7 +98,7 @@ export function SubmitShipmentForm({
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="client-contact-phone">Client Phone</Label>
+            <Label htmlFor="client-contact-phone">Client Phone <span><small className="text-gray-400">(optional: leave empty)</small></span></Label>
             <Input
               id="client-contact-phone"
               name="client-contact-phone"

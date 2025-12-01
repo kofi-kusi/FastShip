@@ -27,14 +27,14 @@ export default function DashboardPage() {
   const { token, user } = useContext(AuthContext)
 
   if (!token) {
-    return <Navigate to="/login" />
+    return <Navigate to="/" />
   }
 
   const {isLoading, isError, data} = useQuery({
     queryKey: ["shipments"],
     queryFn: async () => {
       const userApi = user === "seller" ? api.seller : api.partner
-      const data = userApi.getShipments()
+      const { data } = await userApi.getShipments()
       return data
     }
   })
@@ -54,7 +54,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2 px-3">
             <SidebarTrigger />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            
+            <h2>Dashboard</h2>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
@@ -62,15 +62,15 @@ export default function DashboardPage() {
               isLoading || !data ? <h1>Loading ...</h1> : (
                 <div className="flex flex-1 flex-col gap-4 p-4">
                   <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                    <NumberLabel value={data.data.length} label="Total Shipments" />
-                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.Placed)} label="Placed" />
-                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.InTransit)} label="In Transit" />
-                    <NumberLabel value={getShipmentsCountForStatus(data.data, ShipmentStatus.Delivered)} label="Delivered" />
+                    <NumberLabel value={data.length} label="Total Shipments" />
+                    <NumberLabel value={getShipmentsCountForStatus(data, ShipmentStatus.Placed)} label="Placed" />
+                    <NumberLabel value={getShipmentsCountForStatus(data, ShipmentStatus.InTransit)} label="In Transit" />
+                    <NumberLabel value={getShipmentsCountForStatus(data, ShipmentStatus.Delivered)} label="Delivered" />
                   </div>
                   { isLoading || !data && <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />}
                   <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                   {
-                    data.data.map((shipment) => (
+                    data.map((shipment) => (
                       <ShipmentCard shipment={shipment} />
                     ))
                   }
