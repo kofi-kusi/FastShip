@@ -4,12 +4,12 @@ import { useState } from "react"
 import { toast } from "sonner"
 
 import { ScanQrCode } from "lucide-react"
-// import {
-//     Drawer,
-//     DrawerContent,
-//     DrawerHeader,
-//     DrawerTitle
-// } from "~/components/ui/drawer"
+import {
+    Drawer,
+    DrawerContent,
+    DrawerHeader,
+    DrawerTitle
+} from "~/components/ui/drawer"
 import { Input } from "~/components/ui/input"
 import {
     InputOTP,
@@ -30,7 +30,7 @@ import { ShipmentStatus, type ShipmentRead, type ShipmentUpdate } from "Api"
 import { cn, getLatestStatus } from "~/lib/utils"
 import { Button } from "./ui/button"
 import { SubmitButton } from "./ui/submit-button"
-// import { QrReader } from 'react-qr-reader'
+import { QrReader } from 'react-qr-reader'
 
 
 const statusValues = [
@@ -114,7 +114,7 @@ export function UpdateShipmentForm({
                                 required
                                 placeholder="Shipment Id"
                             />
-                            {/* <QRScanner onScan={onScan}/> */}
+                            <QRScanner onScan={onScan}/>
                         </div>
                         <div className="grid gap-2">
                             <Label>Status</Label>
@@ -185,35 +185,36 @@ export function UpdateShipmentForm({
         </div>
     )
 }
-// function QRScanner({ onScan }: { onScan: (id: string) => void }) {
-//     const [open, setOpen] = useState(false)
 
-//     return <Drawer open={open} onDrag={() => setOpen(false)}>
+function QRScanner({ onScan }: { onScan: (id: string) => void }) {
+    const [open, setOpen] = useState(false)
+
+    return <Drawer open={open} onDrag={() => setOpen(false)}>
     
-//     <Button variant="outline" onClick={() => setOpen(true)}>
-//         <ScanQrCode />
-//     </Button>
+    <Button variant="outline" onClick={() => setOpen(true)}>
+        <ScanQrCode />
+    </Button>
 
-//     <DrawerContent>
-//       <DrawerHeader>
-//         <DrawerTitle>Scan Shipment Label</DrawerTitle>
-//       </DrawerHeader>
-//       {
-//         open && <>
-//             <video id="qr-scan-video"></video>
-//             <QrReader
-//                 videoId="qr-scan-video"
-//                 onResult={(result, error) => {
-//                     if (result) {
-//                         onScan(result.getText())
-//                         setOpen(false)
-//                     }
-//                 }}
-//                 constraints={{ facingMode: "environment" }}
-//             />
-//         </>
-//       }
-//     </DrawerContent>
-//   </Drawer>
+    <DrawerContent>
+      <DrawerHeader>
+        <DrawerTitle>Scan Shipment Label</DrawerTitle>
+      </DrawerHeader>
+      {
+        open && <>
+            <video id="qr-scan-video"></video>
+            <QrReader
+                videoId="qr-scan-video"
+                onResult={(result, error) => {
+                    if (result) {
+                        onScan(result.getText())
+                        setOpen(false)
+                    }
+                }}
+                constraints={{ facingMode: "environment" }}
+            />
+        </>
+      }
+    </DrawerContent>
+  </Drawer>
   
-// }
+}
