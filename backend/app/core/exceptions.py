@@ -75,7 +75,7 @@ def add_exception_handlers(app: FastAPI):
     @app.exception_handler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error_handler(request, exception):
         return JSONResponse(
-            content={"derail": f"Something went wrong"},
+            content={"detail": f"Something went wrong"},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             headers={
                 "X-Error": f"{exception}"
