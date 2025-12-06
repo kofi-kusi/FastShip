@@ -13,7 +13,7 @@ from app.database import models
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", db_settings.POSTGRES_URL)
+config.set_main_option("sqlalchemy.url", f"postgresql+asyncpg://postgres:{db_settings.POSTGRES_PASSWORD}@localhost:5432/fastship")
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

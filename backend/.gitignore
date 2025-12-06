@@ -14,3 +14,7 @@ __pycache__/
 
 # IDE / editor
 .vscode/
+
+postgres_data/
+
+redis_data/
