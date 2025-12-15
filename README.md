@@ -43,17 +43,16 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# Option A (recommended): uvicorn
-uvicorn app.main:app --reload --port 8000
-
-# Option B: fastapi-cli
+# fastapi-cli
 fastapi dev
 ```
 
 Environment:
 
 - Settings are loaded from `backend/.env` via `app/config.py` (Pydantic Settings).
-- Do not commit real credentials. Use your own local values.
+
+> [!WARNING] 
+> Do not commit real credentials. Use your own local values.
 
 ### Frontend 🎨
 
@@ -70,9 +69,8 @@ npm run dev
 
 Alembic config lives in `backend/alembic.ini` and migrations are in `backend/migrations/`.
 
-Important:
-
-- `backend/migrations/env.py` currently sets `sqlalchemy.url` to a hardcoded database URL. Review/update this before running migrations locally.
+> [!IMPORTANT]
+> `backend/migrations/env.py` currently sets `sqlalchemy.url` to a hardcoded database URL. Review/update this before running migrations locally.
 
 Run migrations (after verifying the URL):
 
